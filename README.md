@@ -10,8 +10,8 @@ Knowvera is an AI-powered academic paper search system with advanced features in
 
 | Feature | Screenshot | Description |
 |---------|------------|-------------|
-| **🏠 Homepage** | <img src="docs/screenshots/homepage.png" alt="Homepage" width="300"> | Clean landing page with AI-powered search |
-| **🔍 Search Page** | <img src="docs/screenshots/search-results.png" alt="Search" width="300"> | Advanced filtering and intelligent result |
+| **🏠 Homepage** | <img src="docs/screenshot/homepage.png" alt="Homepage" width="300"> | Clean landing page with AI-powered search |
+| **🔍 Search Page** | <img src="docs/screenshot/search-results.png" alt="Search" width="300"> | Advanced filtering and intelligent result |
 
 </div>
 
