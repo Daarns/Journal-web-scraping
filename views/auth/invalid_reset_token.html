@@ -1,0 +1,28 @@
+{% extends "layouts/auth_layouts.html" %}
+
+{% block title %}Link Kedaluwarsa - Knowvera{% endblock %}
+
+{% block header_title %}Link Reset Tidak Valid{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <div class="mb-4 text-danger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+        </svg>
+    </div>
+    
+    <h2 class="mb-4 text-white">Link Reset Tidak Valid atau Kedaluwarsa</h2>
+    
+    <p class="text-white-50 mb-4">
+        Link reset password yang Anda gunakan telah kedaluwarsa atau tidak valid.<br>
+        Link reset password berlaku selama 10 menit dari waktu permintaan.
+    </p>
+    
+    <div class="d-grid gap-2 mt-4">
+        <a href="/forget-password" class="btn btn-primary">Minta Link Reset Baru</a>
+        <a href="/login" class="btn btn-outline-light">Kembali ke Login</a>
+    </div>
+</div>
+{% endblock %}

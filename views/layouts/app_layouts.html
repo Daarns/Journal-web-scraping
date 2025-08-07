@@ -1,0 +1,1032 @@
+{% extends "layouts/base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/search.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/sidebar.css') }}">
+{% endblock %}
+
+{% block body %}
+<!-- Tambahkan sidebar -->
+<div class="sidebar-edge-trigger"></div>
+<div class="sidebar-container">
+    <div class="sidebar">
+        <!-- Header sidebar dengan logo -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="{{ url_for('static', path='img/knowvera-logo.png') }}" alt="Knowvera"
+                    class="sidebar-logo-img">
+                <span class="sidebar-logo-text">Knowvera</span>
+            </div>
+        </div>
+
+        <!-- Content sidebar -->
+        <div class="sidebar-content">
+            <div class="sidebar-section user-only-features d-none">
+                <h6 class="sidebar-heading">RIWAYAT PERTANYAAN</h6>
+                <div class="chat-history-list">
+                    <!-- Riwayat chat akan diisi secara dinamis via JS -->
+                    <div class="history-empty">
+                        <p class="text-muted small">Belum ada riwayat pertanyaan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer sidebar -->
+        <div class="sidebar-footer user-only-features d-none">
+            <a href="/collections" class="collection-button">
+                <i class="fas fa-folder"></i> Koleksi Saya
+            </a>
+            <div class="sidebar-user-info dropdown">
+                <a class="sidebar-user-menu dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <div class="user-avatar-sidebar">
+                        <div class="avatar-placeholder-sidebar">
+                            <span class="user-initial-sidebar">U</span>
+                        </div>
+                        <img src="" alt="Profile" class="avatar-image-sidebar d-none" width="32" height="32"
+                            crossorigin="anonymous" referrerpolicy="no-referrer">
+                    </div>
+                    <span class="username-display-sidebar">User</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-start">
+                    <li><a class="dropdown-item logout-btn" href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Hover trigger untuk sidebar -->
+    <div class="sidebar-trigger"></div>
+</div>
+
+<div class="main-container">
+    <!-- Cari dan ganti bagian navbar dengan kode berikut -->
+    <nav class="navbar navbar-expand navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <img src="{{ url_for('static', path='img/knowvera-logo.png') }}" width="60" height="60"
+                            alt="Knowvera Logo">
+                    </div>
+                    <span class="logo-text">Knowvera</span>
+                </div>
+            </a>
+
+            <div class="navbar-spacer flex-grow-1"></div>
+
+            <div class="filter-controls d-none">
+                <!-- Filter controls tetap sama -->
+                <div class="d-flex align-items-center gap-2">
+                    <div class="year-filter dropdown">
+                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" data-current-filter="all">
+                            Year <span class="filter-value"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-year="all">Semua tahun</a></li>
+                            <!-- Opsi lain akan diisi dinamis -->
+                        </ul>
+                    </div>
+                    <div class="source-filter dropdown">
+                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" data-current-filter="all">
+                            Source
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-source="all">Semua sumber</a></li>
+                            <li><a class="dropdown-item" href="#" data-source="arxiv">ArXiv</a></li>
+                            <li><a class="dropdown-item" href="#" data-source="semantic">Semantic</a></li>
+                            <li><a class="dropdown-item" href="#" data-source="scholar">Google Scholar</a></li>
+                        </ul>
+                    </div>
+                    <!-- Tombol reset akan ditambahkan secara dinamis di sini -->
+                </div>
+            </div>
+
+            <!-- Dalam <div class="navbar-nav ms-auto"> -->
+            <div class="navbar-nav ms-auto">
+                <!-- Menu untuk pengguna yang sudah login -->
+                <div class="dropdown user-menu-dropdown d-none">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <!-- User avatar, akan diubah melalui JavaScript -->
+                        <div class="user-avatar me-2">
+                            <div class="avatar-placeholder">
+                                <span class="user-initial">U</span>
+                            </div>
+                            <img src="" alt="Profile" class="avatar-image d-none" width="32" height="32"
+                                crossorigin="anonymous" referrerpolicy="no-referrer">
+                        </div>
+                        <span class="username-display">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item logout-btn" href="#">Logout</a></li>
+                    </ul>
+                </div>
+
+                <!-- Link Login dan Register (terlihat saat tidak login) -->
+                <div class="auth-links">
+                    <a class="nav-link register-link" href="/register">Register</a>
+                    <a class="nav-link login-link" href="/login">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-area">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+
+{% block modals %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Function untuk memformat pesan chat dengan markdown sederhana
+    function formatChatMessage(message) {
+        if (message.includes("**") || message.includes("##")) {
+            return message
+                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replace(/##\s+(.*?)(?=##|$)/g, "<h6>$1</h6>")
+                .replace(/\n\n/g, "<br><br>");
+        }
+        return message;
+    }
+    // Fungsi untuk mencoba beberapa format URL avatar secara berurutan
+    function tryMultipleAvatarUrls(rawAvatarUrl, avatarImage, avatarPlaceholder, userInitial, initialChar) {
+        // Console log dengan waktu untuk debug
+        const logWithTime = (msg) => {
+            const now = new Date();
+            const timeStr = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+            console.log(`[${timeStr}] ${msg}`);
+        };
+
+        logWithTime(`Starting avatar loading sequence for: ${rawAvatarUrl}`);
+
+        // Ubah prioritas URLs - langsung menggunakan URL Google
+        const urlsToTry = [
+            // 1. Gunakan URL langsung (tanpa proxy)
+            rawAvatarUrl,
+
+            // 2. Coba URL dengan parameter size yang berbeda
+            rawAvatarUrl.includes('=s') ?
+                rawAvatarUrl.replace(/=s\d+-c/, "=s256-c") : null,
+
+            // 3. Coba URL tanpa parameter size
+            rawAvatarUrl.includes('=') ?
+                rawAvatarUrl.split('=')[0] : null,
+
+            // 4. Fallback ke initials (tidak perlu URL untuk ini)
+        ].filter(Boolean); // Hapus null values
+
+        logWithTime(`Generated ${urlsToTry.length} URLs to try: ${JSON.stringify(urlsToTry)}`);
+
+        // Fungsi rekursif untuk mencoba URLs satu per satu
+        const tryNextUrl = (index) => {
+            if (index >= urlsToTry.length) {
+                // Semua URLs sudah dicoba dan gagal, gunakan inisial
+                logWithTime("All avatar URLs failed, using initials");
+                userInitial.textContent = initialChar.toUpperCase();
+                avatarImage.classList.add('d-none');
+                avatarPlaceholder.classList.remove('d-none');
+                return;
+            }
+
+            const currentUrl = urlsToTry[index];
+            logWithTime(`Trying avatar URL #${index + 1}: ${currentUrl}`);
+
+            // Buat image baru untuk testing dengan atribut penting untuk CORS
+            const testImage = new Image();
+            testImage.crossOrigin = "anonymous";
+            testImage.referrerPolicy = "no-referrer";
+
+            testImage.onload = function () {
+                logWithTime(`Avatar URL #${index + 1} loaded successfully`);
+                // Jika berhasil, set ke avatarImage yang sebenarnya
+                avatarImage.src = currentUrl;
+                avatarImage.classList.remove('d-none');
+                avatarPlaceholder.classList.add('d-none');
+            };
+
+            testImage.onerror = function (e) {
+                logWithTime(`Avatar URL #${index + 1} failed to load: ${e ? e.type : 'unknown error'}`);
+                // Coba URL berikutnya
+                tryNextUrl(index + 1);
+            };
+
+            // Mulai loading dengan timeout untuk keamanan
+            setTimeout(() => {
+                testImage.src = currentUrl;
+            }, 50 * index); // Sedikit jeda antar percobaan
+        };
+
+        // Mulai proses dengan URL pertama
+        tryNextUrl(0);
+    }
+
+    async function ensureCsrfToken() {
+        // Implementasi sederhana - mendapatkan token dari cookie jika ada
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Cek CSRF token di cookie
+        const csrfToken = getCookie('csrf_token');
+        return csrfToken;
+    }
+
+    // Fungsi untuk mendapatkan avatar dari API user
+    async function fetchAvatarFromApi(token) {
+        try {
+            const response = await fetch('/api/user/avatar', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data.avatar_url;
+            }
+        } catch (err) {
+            console.error("Error fetching avatar from API:", err);
+        }
+        return null;
+    }
+
+    function isLoggedIn() {
+        return !!localStorage.getItem('token');
+    }
+
+    // Fungsi untuk memperbarui UI berdasarkan status login
+    function updateUIBasedOnLoginStatus() {
+        const isUserLoggedIn = isLoggedIn();
+
+        // Simpan status login sebagai atribut data di body untuk CSS selectors
+        document.body.setAttribute('data-user-logged-in', isUserLoggedIn);
+
+        // Variabel untuk fitur yang berbeda berdasarkan login status
+        window.userLoggedIn = isUserLoggedIn;
+
+        // Tambahkan class khusus ke body untuk memudahkan CSS targeting
+        if (isUserLoggedIn) {
+            document.body.classList.add('logged-in-user');
+            document.body.classList.remove('guest-user');
+        } else {
+            document.body.classList.add('guest-user');
+            document.body.classList.remove('logged-in-user');
+        }
+    }
+
+    // Fungsi untuk menambahkan item riwayat chat ke sidebar
+    function addChatHistoryItem(id, question, paperTitle, timestamp) {
+        const historyList = document.querySelector('.chat-history-list');
+        const emptyMessage = document.querySelector('.history-empty');
+
+        // Hapus pesan kosong jika ada
+        if (emptyMessage) {
+            emptyMessage.classList.add('d-none');
+        }
+
+        // Buat item riwayat baru
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.setAttribute('data-session-id', id);
+
+        // Format timestamp
+        const date = new Date(timestamp);
+        const formattedDate = `${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`;
+
+        // Trim question jika terlalu panjang
+        const shortQuestion = question.length > 40 ? question.substring(0, 40) + '...' : question;
+
+        historyItem.innerHTML = `
+      <div class="history-item-content">
+        <h6 class="history-item-title">${shortQuestion}</h6>
+        <p class="history-item-subtitle">${paperTitle}</p>
+        <div class="history-item-meta">
+          <span class="history-item-date">${formattedDate}</span>
+        </div>
+      </div>
+    `;
+
+        // Event listener untuk membuka riwayat
+        historyItem.addEventListener('click', function () {
+            // Implementasi fungsi untuk membuka riwayat chat
+            console.log(`Opening chat history with ID: ${id}`);
+        });
+
+        // Tambahkan ke daftar
+        if (historyList) {
+            historyList.insertBefore(historyItem, historyList.firstChild);
+        }
+    }
+
+    async function deleteChatSession(sessionId) {
+        try {
+            // Cek koneksi internet
+            if (!navigator.onLine) {
+                return { success: false, error: 'Tidak ada koneksi internet' };
+            }
+
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            };
+
+            // Tambahkan CSRF token ke headers
+            const csrfToken = await ensureCsrfToken();
+            if (csrfToken) {
+                headers["X-CSRF-Token"] = csrfToken;
+            }
+
+            const response = await fetch(`/api/ai/chat-sessions/${sessionId}`, {
+                method: 'DELETE',
+                headers,
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                return { success: true };
+            } else {
+                const errorData = await response.json();
+                return {
+                    success: false,
+                    error: errorData.detail || 'Gagal menghapus riwayat chat'
+                };
+            }
+        } catch (error) {
+            console.error("Error calling delete API:", error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    function showToast(message, type = "success") {
+        // Buat element toast
+        const toastId = `toast_${Date.now()}`;
+        const toast = document.createElement("div");
+        toast.className = `toast align-items-center text-white bg-${type === "success" ? "success" : "danger"} border-0`;
+        toast.setAttribute("role", "alert");
+        toast.setAttribute("aria-live", "assertive");
+        toast.setAttribute("aria-atomic", "true");
+        toast.setAttribute("id", toastId);
+
+        toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      `;
+
+        // Tambahkan toast ke container
+        let toastContainer = document.querySelector(".toast-container");
+        if (!toastContainer) {
+            toastContainer = document.createElement("div");
+            toastContainer.className = "toast-container position-fixed bottom-0 end-0 p-3";
+            document.body.appendChild(toastContainer);
+        }
+
+        toastContainer.appendChild(toast);
+
+        // Inisialisasi dan tampilkan toast
+        const bsToast = new bootstrap.Toast(toast, {
+            autohide: true,
+            delay: 3000
+        });
+
+        bsToast.show();
+
+        // Hapus toast dari DOM setelah disembunyikan
+        toast.addEventListener('hidden.bs.toast', function () {
+            this.remove();
+        });
+    }
+
+    function confirmDeleteChatHistory(sessionId, question, paperTitle) {
+        // Buat modal konfirmasi
+        const modalHtml = `
+        <div class="modal fade delete-confirm-modal" id="deleteChatConfirmModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi Hapus</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus riwayat pertanyaan ini?</p>
+                <div class="chat-preview mt-3 p-3 rounded" style="background-color: rgba(0,0,0,0.2);">
+                  <div class="fw-bold">${question}</div>
+                  <div class="small text-muted">Paper: ${paperTitle}</div>
+                </div>
+                <p class="text-danger mt-3 mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteChatBtn">
+                  Hapus Riwayat
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+        // Tambahkan modal ke DOM
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // Ambil referensi modal
+        const modalElement = document.getElementById('deleteChatConfirmModal');
+        const modal = new bootstrap.Modal(modalElement);
+
+        // Tambahkan event listener untuk tombol konfirmasi
+        document.getElementById('confirmDeleteChatBtn').addEventListener('click', async function () {
+            try {
+                // Tampilkan loading state
+                this.disabled = true;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menghapus...';
+
+                // Panggil API untuk menghapus chat session
+                const result = await deleteChatSession(sessionId);
+
+                if (result.success) {
+                    // Tutup modal
+                    modal.hide();
+
+                    // Hapus item dari sidebar dengan animasi
+                    const historyItem = document.querySelector(`.history-item[data-session-id="${sessionId}"]`);
+                    if (historyItem) {
+                        // Tambahkan kelas untuk efek animasi
+                        historyItem.classList.add('deleting');
+
+                        // Tunggu animasi selesai baru hapus elemen dari DOM
+                        setTimeout(() => {
+                            historyItem.remove();
+
+                            // Cek apakah masih ada riwayat, jika tidak tampilkan pesan empty
+                            const historyList = document.querySelector('.chat-history-list');
+                            if (historyList && historyList.querySelectorAll('.history-item').length === 0) {
+                                const emptyMessage = document.querySelector('.history-empty');
+                                if (emptyMessage) {
+                                    emptyMessage.classList.remove('d-none');
+                                }
+                            }
+                        }, 300); // Durasi sesuai dengan transition di CSS
+                    }
+
+                    // Tampilkan notifikasi sukses
+                    showToast("Riwayat pertanyaan berhasil dihapus");
+                } else {
+                    showToast("Gagal menghapus riwayat", "error");
+                }
+            } catch (error) {
+                console.error("Error deleting chat session:", error);
+                showToast("Terjadi kesalahan saat menghapus riwayat", "error");
+            } finally {
+                // Hapus modal dari DOM setelah ditutup
+                modalElement.addEventListener('hidden.bs.modal', function () {
+                    modalElement.remove();
+                });
+            }
+        });
+
+        // Tampilkan modal
+        modal.show();
+    }
+
+    // Fungsi untuk mengambil dan menampilkan riwayat chat
+    async function loadChatHistory() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            // Gunakan satu endpoint API saja (pilih salah satu)
+            const response = await fetch('/api/ai/chat-sessions', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const sessions = await response.json();
+
+                // Hapus "belum ada riwayat" jika ada sessions
+                const emptyMessage = document.querySelector('.history-empty');
+                if (sessions.length > 0 && emptyMessage) {
+                    emptyMessage.classList.add('d-none');
+                }
+
+                // Hapus dulu semua item yang ada untuk mencegah duplikasi
+                const historyList = document.querySelector('.chat-history-list');
+                if (historyList) {
+                    historyList.innerHTML = '';
+                }
+
+                // Tampilkan history items
+                sessions.forEach(session => {
+                    addChatSessionToSidebar(
+                        session.id,
+                        session.question || session.first_question,
+                        session.paper_title || 'General Question',
+                        new Date(session.created_at || session.last_message_at)
+                    );
+                });
+            }
+        } catch (error) {
+            console.error('Error loading chat history:', error);
+        }
+    }
+
+    // Fungsi untuk menambahkan chat session ke sidebar
+    window.addChatSessionToSidebar = function (id, question, paperTitle, timestamp) {
+        const historyList = document.querySelector('.chat-history-list');
+        const emptyMessage = document.querySelector('.history-empty');
+
+        // Hapus pesan kosong jika ada
+        if (emptyMessage) {
+            emptyMessage.classList.add('d-none');
+        }
+
+        // Format timestamp
+        const date = new Date(timestamp);
+        const formattedDate = `${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`;
+
+        // Trim question jika terlalu panjang
+        const shortQuestion = question.length > 40 ? question.substring(0, 40) + '...' : question;
+        // Trim paper title jika terlalu panjang
+        const shortTitle = paperTitle.length > 30 ? paperTitle.substring(0, 30) + '...' : paperTitle;
+
+        // Buat item riwayat baru
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.setAttribute('data-session-id', id);
+        historyItem.innerHTML = `
+        <div class="history-item-content">
+          <div class="history-item-question">${shortQuestion}</div>
+          <div class="history-item-paper">${shortTitle}</div>
+          <div class="history-item-date">${formattedDate}</div>
+        </div>
+        <div class="history-item-actions">
+          <button class="btn-delete-history" title="Hapus riwayat pertanyaan ini">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      `;
+
+        // Tambahkan click event untuk membuka chat lagi
+        const contentArea = historyItem.querySelector('.history-item-content');
+        contentArea.addEventListener('click', function () {
+            openChatSession(id);
+        });
+
+        // Tambahkan click event untuk tombol hapus
+        const deleteBtn = historyItem.querySelector('.btn-delete-history');
+        deleteBtn.addEventListener('click', function (e) {
+            e.stopPropagation(); // Penting! Mencegah event click memicu openChatSession
+            confirmDeleteChatHistory(id, shortQuestion, shortTitle);
+        });
+
+        // Tambahkan ke daftar
+        if (historyList) {
+            historyList.prepend(historyItem); // Tambahkan di paling atas
+        }
+    };
+
+    // Fungsi untuk membuka chat session yang tersimpan
+    async function openChatSession(sessionId) {
+        try {
+            const response = await fetch(`/api/ai/chat-sessions/${sessionId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const sessionData = await response.json();
+
+                // Buka modal chat
+                const chatModal = new bootstrap.Modal(document.getElementById("chatModal"));
+                chatModal.show();
+
+                // Set judul modal
+                document.getElementById("chatModalTitle").textContent =
+                    `Tanya tentang: ${sessionData.paper_title.length > 60
+                        ? sessionData.paper_title.substring(0, 60) + '...'
+                        : sessionData.paper_title}`;
+
+                // Reset dan isi chat container
+                const chatContainer = document.getElementById("chatContainer");
+                chatContainer.innerHTML = "";
+
+                // Tambahkan pesan selamat datang
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'welcome-message';
+                welcomeMessage.innerHTML = `
+                <p>Melanjutkan percakapan tentang paper "<strong>${sessionData.paper_title}</strong>".</p>
+            `;
+                chatContainer.appendChild(welcomeMessage);
+
+                // Tambahkan semua pesan
+                sessionData.messages.forEach(msg => {
+                    const messageDiv = document.createElement("div");
+                    messageDiv.className = `message-bubble ${msg.is_user ? "user-message" : "ai-message"}`;
+
+                    if (msg.is_user) {
+                        messageDiv.textContent = msg.message;
+                    } else {
+                        messageDiv.innerHTML = formatChatMessage(msg.message);
+                    }
+
+                    chatContainer.appendChild(messageDiv);
+                });
+
+                // Scroll ke bawah
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                // ✅ SET CONTEXT YANG LENGKAP dengan session ID yang PERSISTENT
+                window.currentPaperContext = {
+                    id: sessionData.paper_id,
+                    title: sessionData.paper_title,
+                    authors: sessionData.paper_authors || "",
+                    abstract: sessionData.paper_abstract || "",
+                    pdf_url: sessionData.pdf_url || null,
+                    has_local_pdf: false,
+                    chat_session_id: sessionId // ✅ PERSISTENT SESSION ID
+                };
+
+                // ✅ PERSISTENT SESSION STORAGE - SATU PAPER SATU SESSION SELAMANYA
+                const savedSessions = JSON.parse(localStorage.getItem("chatSessions") || "{}");
+                savedSessions[sessionData.paper_id] = {
+                    sessionId: sessionId,
+                    title: sessionData.paper_title,
+                    paperId: sessionData.paper_id,
+                    persistentSession: true // ✅ MARK sebagai persistent
+                };
+                localStorage.setItem("chatSessions", JSON.stringify(savedSessions));
+
+                // Reset input pertanyaan
+                document.getElementById("modalQuestionInput").value = "";
+
+                // Focus pada input
+                setTimeout(() => {
+                    document.getElementById("modalQuestionInput").focus();
+                }, 500);
+
+                // ✅ CHECK PDF AVAILABILITY setelah context di-set
+                setTimeout(async () => {
+                    if (window.checkPdfAvailabilityForChat) {
+                        await window.checkPdfAvailabilityForChat(
+                            {
+                                id: sessionData.paper_id,
+                                pdf_url: sessionData.pdf_url,
+                                source: sessionData.paper_source || ""
+                            },
+                            sessionData.paper_id,
+                            sessionData.paper_title
+                        );
+                    }
+                }, 200);
+            }
+        } catch (error) {
+            console.error("Error opening chat session:", error);
+
+            // ✅ FALLBACK: Buka modal kosong dengan context minimal
+            const chatModal = new bootstrap.Modal(document.getElementById("chatModal"));
+            chatModal.show();
+
+            document.getElementById("chatModalTitle").textContent = "Chat Session";
+            document.getElementById("chatContainer").innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                Tidak dapat memuat riwayat chat. Silakan mulai percakapan baru.
+            </div>
+        `;
+        }
+    }
+
+    async function loadChatSessions() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            const response = await fetch('/api/ai/chat-sessions', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const sessions = await response.json();
+
+                // ✅ SYNC dengan localStorage untuk persistent sessions
+                const savedSessions = JSON.parse(localStorage.getItem("chatSessions") || "{}");
+
+                // Hapus "belum ada riwayat" jika ada sessions
+                const emptyMessage = document.querySelector('.history-empty');
+                if (sessions.length > 0 && emptyMessage) {
+                    emptyMessage.classList.add('d-none');
+                }
+
+                // Hapus dulu semua item yang ada untuk mencegah duplikasi
+                const historyList = document.querySelector('.chat-history-list');
+                if (historyList) {
+                    historyList.innerHTML = '';
+                }
+
+                // ✅ GROUP sessions by paper_id untuk menghindari duplikasi
+                const sessionsByPaper = {};
+
+                sessions.forEach(session => {
+                    const paperId = session.paper_id;
+
+                    // Jika belum ada atau session ini lebih baru
+                    if (!sessionsByPaper[paperId] ||
+                        new Date(session.last_message_at) > new Date(sessionsByPaper[paperId].last_message_at)) {
+                        sessionsByPaper[paperId] = session;
+                    }
+
+                    // ✅ SYNC ke localStorage sebagai persistent session
+                    savedSessions[paperId] = {
+                        sessionId: session.id,
+                        title: session.paper_title || 'General Question',
+                        paperId: paperId,
+                        persistentSession: true,
+                        lastUsed: session.last_message_at
+                    };
+                });
+
+                // ✅ SAVE updated persistent sessions
+                localStorage.setItem("chatSessions", JSON.stringify(savedSessions));
+
+                // ✅ DISPLAY satu session per paper
+                Object.values(sessionsByPaper).forEach(session => {
+                    addChatSessionToSidebar(
+                        session.id,
+                        session.question || session.first_question,
+                        session.paper_title || 'General Question',
+                        new Date(session.created_at || session.last_message_at),
+                        true // ✅ Mark sebagai persistent
+                    );
+                });
+
+                console.log("✅ Loaded and synced persistent chat sessions:", Object.keys(sessionsByPaper).length);
+            }
+        } catch (error) {
+            console.error('Error loading chat sessions:', error);
+        }
+    }
+
+    // Panggil fungsi loadChatSessions() saat halaman dimuat jika user login
+    document.addEventListener('DOMContentLoaded', function () {
+        if (isLoggedIn()) {
+            loadChatSessions();
+        }
+    });
+
+    // Panggil juga saat status login berubah
+    document.addEventListener('loginStatusUpdated', function (e) {
+        if (e.detail.isLoggedIn) {
+            loadChatSessions();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Check login status
+        const token = localStorage.getItem('token');
+        const authLinks = document.querySelector('.auth-links');
+        const userMenuDropdown = document.querySelector('.user-menu-dropdown');
+        const userOnlyFeatures = document.querySelectorAll('.user-only-features');
+        const usernameDisplay = document.querySelector('.username-display');
+        const usernameDisplaySidebar = document.querySelector('.username-display-sidebar');
+        const avatarPlaceholder = document.querySelector('.avatar-placeholder');
+        const avatarPlaceholderSidebar = document.querySelector('.avatar-placeholder-sidebar');
+        const avatarImage = document.querySelector('.avatar-image');
+        const avatarImageSidebar = document.querySelector('.avatar-image-sidebar');
+        const userInitial = document.querySelector('.user-initial');
+        const userInitialSidebar = document.querySelector('.user-initial-sidebar');
+
+        if (token) {
+            // User sudah login - tampilkan menu dropdown dan fitur user
+            if (authLinks) authLinks.classList.add('d-none');
+            if (userMenuDropdown) userMenuDropdown.classList.remove('d-none');
+            userOnlyFeatures.forEach(el => el.classList.remove('d-none'));
+
+            try {
+                // Decode token
+                const payloadBase64 = token.split('.')[1];
+                if (!payloadBase64) {
+                    throw new Error('Invalid token format');
+                }
+
+                const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                const payload = JSON.parse(jsonPayload);
+                console.log("Token payload keys:", Object.keys(payload));
+
+                let username = 'User';
+                let initial = 'U';
+
+                // Get username
+                if (payload.name) {
+                    username = payload.name;
+                    initial = payload.name.charAt(0);
+                } else if (payload.sub) {
+                    username = payload.sub.split('@')[0];
+                    initial = username.charAt(0);
+                }
+
+                // Update username display (navbar dan sidebar)
+                if (usernameDisplay) usernameDisplay.textContent = username;
+                if (usernameDisplaySidebar) usernameDisplaySidebar.textContent = username;
+
+                // Handle avatar loading
+                if ((avatarPlaceholder && avatarImage && userInitial) ||
+                    (avatarPlaceholderSidebar && avatarImageSidebar && userInitialSidebar)) {
+                    console.log("Checking for avatar in token payload");
+
+                    // Prioritaskan avatar dari token
+                    if (payload.avatar) {
+                        console.log("Found avatar in token:", payload.avatar);
+                        if (avatarPlaceholder && avatarImage && userInitial) {
+                            tryMultipleAvatarUrls(payload.avatar, avatarImage, avatarPlaceholder, userInitial, initial);
+                        }
+                        if (avatarPlaceholderSidebar && avatarImageSidebar && userInitialSidebar) {
+                            tryMultipleAvatarUrls(payload.avatar, avatarImageSidebar, avatarPlaceholderSidebar, userInitialSidebar, initial);
+                        }
+                    } else {
+                        console.log("No avatar in token, checking API");
+                        // Set initial sebagai default
+                        if (userInitial) {
+                            userInitial.textContent = initial.toUpperCase();
+                            avatarPlaceholder.classList.remove('d-none');
+                        }
+                        if (userInitialSidebar) {
+                            userInitialSidebar.textContent = initial.toUpperCase();
+                            avatarPlaceholderSidebar.classList.remove('d-none');
+                        }
+
+                        // Cek avatar dari API
+                        const apiAvatarUrl = await fetchAvatarFromApi(token);
+                        if (apiAvatarUrl) {
+                            console.log("Found avatar from API:", apiAvatarUrl);
+                            if (avatarPlaceholder && avatarImage && userInitial) {
+                                tryMultipleAvatarUrls(apiAvatarUrl, avatarImage, avatarPlaceholder, userInitial, initial);
+                            }
+                            if (avatarPlaceholderSidebar && avatarImageSidebar && userInitialSidebar) {
+                                tryMultipleAvatarUrls(apiAvatarUrl, avatarImageSidebar, avatarPlaceholderSidebar, userInitialSidebar, initial);
+                            }
+                        } else {
+                            // Gunakan initials jika tidak ada avatar
+                            console.log("No avatar found anywhere, using initials");
+                        }
+                    }
+                }
+
+                // Load chat history for sidebar
+                loadChatHistory();
+
+            } catch (e) {
+                console.error('Error parsing token or processing avatar:', e);
+                if (usernameDisplay) usernameDisplay.textContent = 'User';
+                if (userInitial) userInitial.textContent = 'U';
+                if (usernameDisplaySidebar) usernameDisplaySidebar.textContent = 'User';
+                if (userInitialSidebar) userInitialSidebar.textContent = 'U';
+            }
+
+            // Event listener untuk tombol logout
+            const logoutBtns = document.querySelectorAll('.logout-btn');
+            logoutBtns.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    localStorage.removeItem('token');
+                    updateUIBasedOnLoginStatus();
+                    window.location.href = '/';
+                });
+            });
+        } else {
+            // User belum login - tampilkan link login
+            if (authLinks) authLinks.classList.remove('d-none');
+            if (userMenuDropdown) userMenuDropdown.classList.add('d-none');
+            userOnlyFeatures.forEach(el => el.classList.add('d-none'));
+        }
+
+        // Update global UI state berdasarkan login status
+        updateUIBasedOnLoginStatus();
+
+        // Custom event untuk notifikasi komponen lain tentang status login
+        document.dispatchEvent(new CustomEvent('loginStatusUpdated', {
+            detail: { isLoggedIn: isLoggedIn() }
+        }));
+    });
+
+    // Event listeners untuk sidebar hover
+    // Perbarui event listeners untuk sidebar
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebarContainer = document.querySelector('.sidebar-container');
+        const sidebarTrigger = document.querySelector('.sidebar-trigger');
+        const sidebarEdgeTrigger = document.querySelector('.sidebar-edge-trigger');
+        const mainContainer = document.querySelector('.main-container');
+
+        if (sidebarContainer && (sidebarTrigger || sidebarEdgeTrigger)) {
+            // Mode desktop - gunakan hover untuk kedua trigger
+            function handleTriggerHover() {
+                if (window.innerWidth >= 768) {
+                    sidebarContainer.classList.add('sidebar-expanded');
+                }
+            }
+
+            // Mode mobile - gunakan klik
+            function handleTriggerClick() {
+                if (window.innerWidth < 768) {
+                    sidebarContainer.classList.toggle('sidebar-expanded');
+                    mainContainer.classList.toggle('sidebar-pushed');
+                }
+            }
+
+            // Handle hover pada desktop untuk trigger icon
+            if (sidebarTrigger) {
+                sidebarTrigger.addEventListener('mouseenter', handleTriggerHover);
+            }
+
+            // Handle hover pada desktop untuk edge trigger
+            if (sidebarEdgeTrigger) {
+                sidebarEdgeTrigger.addEventListener('mouseenter', handleTriggerHover);
+            }
+
+            // Handle klik pada mobile
+            if (sidebarTrigger) {
+                sidebarTrigger.addEventListener('click', handleTriggerClick);
+            }
+
+            // Hover pada sidebar mempertahankannya tetap terbuka
+            sidebarContainer.addEventListener('mouseenter', function () {
+                sidebarContainer.classList.add('sidebar-expanded');
+            });
+
+            // Ketika mouse meninggalkan sidebar, tutup
+            sidebarContainer.addEventListener('mouseleave', function () {
+                sidebarContainer.classList.remove('sidebar-expanded');
+                // Hanya ubah sidebar-pushed di mobile
+                if (window.innerWidth < 768) {
+                    mainContainer.classList.remove('sidebar-pushed');
+                }
+            });
+
+            // Klik di main container menutup sidebar di mobile
+            mainContainer.addEventListener('click', function () {
+                if (window.innerWidth < 768 && sidebarContainer.classList.contains('sidebar-expanded')) {
+                    sidebarContainer.classList.remove('sidebar-expanded');
+                    mainContainer.classList.remove('sidebar-pushed');
+                }
+            });
+
+            // Deteksi perubahan ukuran window
+            window.addEventListener('resize', function () {
+                // Reset tampilan saat resize
+                if (window.innerWidth < 768) {
+                    sidebarContainer.classList.remove('sidebar-expanded');
+                    mainContainer.classList.remove('sidebar-pushed');
+                }
+            });
+        }
+
+        // Tambahkan kelas untuk efek transisi setelah halaman dimuat
+        setTimeout(() => {
+            if (sidebarContainer) {
+                sidebarContainer.classList.add('sidebar-loaded');
+            }
+        }, 300);
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fix untuk masalah backdrop yang tersisa
+        document.body.addEventListener('hidden.bs.modal', function () {
+            // Periksa jika masih ada modal yang terbuka
+            if (document.querySelector('.modal.show') === null) {
+                // Hapus semua backdrop yang tersisa
+                document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+                    backdrop.remove();
+                });
+
+                // Pastikan body tidak memiliki class modal-open
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        }, true);
+    });
+</script>
+
+{% block page_scripts %}{% endblock %}
+{% endblock %}

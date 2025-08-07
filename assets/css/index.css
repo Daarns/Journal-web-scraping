@@ -1,0 +1,401 @@
+/* Base styles */
+body {
+    background:  rgb(2, 3, 19);
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh; /* Tetap */
+    height: 100vh; /* Tambahkan ini */
+    margin: 0; /* Tambahkan ini */
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden; /* Tambahkan ini */
+  }
+/* Particles background */
+.particles-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* Content wrapper with fade-in animation */
+.content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card with hover effect */
+.landing-card {
+  background-color: rgb(12, 14, 35);
+    border-radius: 15px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    margin: 20px auto; /* Kurangi dari 40px ke 20px */
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 800px;
+    min-height: auto; /* Hapus min-height:500px */
+    display: flex;
+    flex-direction: column;
+  }
+  
+
+.landing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Logo with animation */
+.logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 60px; /* Kurangi dari 120px */
+    opacity: 0;
+    animation: staggeredFadeIn 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+  }
+  
+
+.logo-icon img {
+    width: 60px;
+    height: 60px;
+    transition: transform 0.3s ease;
+    filter: brightness(0) invert(1); /* Membuat logo putih untuk tema gelap */
+  }
+
+.logo:hover .logo-icon img {
+  transform: rotate(10deg);
+}
+
+.logo-text {
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+}
+
+.heading-container {
+    min-height: 80px; /* Kurangi dari 120px */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+  }
+
+  .typed-text-wrapper {
+    display: inline-block;
+    position: relative;
+    min-height: unset; /* Hapus min-height jika ada */
+  }
+
+  .typed-text {
+    position: relative;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    display: inline;
+    font-size: 42px; /* Ukuran font untuk teks yang diketik */
+  }
+/* Override untuk kursor typed.js */
+.typed-cursor {
+  display: inline;
+  position: relative;
+}
+
+/* Heading with animated underline */
+.heading {
+  font-size: 46px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  line-height: 1.2;
+  margin: 0 auto 20px;
+  position: relative;
+  opacity: 0;
+  animation: staggeredFadeIn 0.8s ease-out forwards;
+  animation-delay: 0.5s;
+  display: block; /* Ganti flex menjadi block */
+  width: 100%;
+}
+
+.heading::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background-color: #4285f4;
+  transition: width 0.3s ease;
+}
+
+.landing-card:hover .heading::after {
+  width: 100px;
+}
+
+.subheading {
+  font-size: 18px;
+  color: white;
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: staggeredFadeIn 0.8s ease-out forwards;
+  animation-delay: 0.8s;
+  position: relative;
+  z-index: 2;
+}
+
+/* Button with animations */
+.cta-button {
+  background-color: #4285f4;
+  color: white !important;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 auto;
+  min-width: 240px;
+  text-decoration: none;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  animation: staggeredFadeIn 0.8s ease-out forwards;
+  animation-delay: 1.1s;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+}
+
+.cta-button:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease-in-out;
+}
+
+.cta-button:hover {
+  background-color: #3b78e7;
+  color: white !important;
+  text-decoration: none;
+}
+
+.cta-button:hover:after {
+  left: 100%;
+}
+
+.btn-icon {
+  display: inline-flex;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover .btn-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.btn-text {
+  transition: transform 0.3s ease;
+}
+
+.cta-button:hover .btn-text {
+  transform: translateX(-4px);
+}
+
+@keyframes staggeredFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important; /* Warna placeholder semi-transparan */
+  opacity: 1; /* Firefox membutuhkan ini */
+}
+
+/* Untuk browser lama */
+::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Pastikan teks input selalu berwarna putih, bahkan saat mengetik */
+.search-query, 
+.question-input {
+  color: white !important; /* Memastikan teks selalu putih */
+  caret-color: white; /* Warna kursor input */
+}
+
+/* Menghapus background putih autofill pada form */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s;
+  -webkit-text-fill-color: white !important;
+}
+
+/* Desktop view - above 992px */
+@media (min-width: 992px) {
+  body {
+    padding: 40px;
+  }
+
+  .landing-card {
+    margin: 40px auto;
+  }
+}
+
+/* Tablet view */
+@media (max-width: 991px) and (min-width: 768px) {
+  .landing-card {
+    padding: 30px;
+  }
+
+  .logo {
+    margin-bottom: 50px;
+  }
+
+  .heading {
+    font-size: 38px;
+  }
+  .typed-text {
+    font-size: 34px; /* Sesuaikan dengan heading (42px) di tablet */
+  }
+}
+
+/* Mobile view */
+@media (max-width: 767px) {
+  body {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* Mencegah scroll */
+    height: 100vh;
+    width: 100vw; /* Pastikan lebar penuh */
+    display: flex; /* Tambahkan ini */
+    align-items: center; /* Tengah vertikal */
+    justify-content: center; /* Tengah horizontal */
+  }
+
+  .content-wrapper {
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center; /* Tengah vertikal */
+    justify-content: center; /* Tengah horizontal */
+  }
+
+  .landing-card {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    height: auto;
+    max-width: 100%;
+    width: 90%; /* Beri sedikit margin di kanan kiri */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Tengah horizontal */
+    justify-content: center; /* Tengah vertikal */
+  }
+
+  /* Penyesuaian jarak untuk penempatan di tengah */
+  .logo {
+    margin-bottom: 30px;
+    margin-top: 0; /* Hapus margin atas */
+  }
+
+  .heading-container {
+    min-height: auto; /* Biarkan sesuai konten */
+    margin-bottom: 15px;
+  }
+
+  .subheading {
+    margin-bottom: 30px;
+  }
+
+  .cta-button {
+    margin-top: 10px;
+    margin-bottom: 0; /* Hapus margin bawah */
+  }
+
+  /* Tambahkan background gradient yang lebih simple untuk mobile */
+  body:before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f7fafd 0%, #e9f1f9 100%);
+    z-index: -1;
+  }
+}
+
+/* Perbaikan tambahan untuk ponsel dengan layar kecil */
+@media (max-width: 380px) {
+  .heading {
+    font-size: 28px;
+  }
+  
+  .typed-text {
+    font-size: 24px;
+  }
+  
+  .logo {
+    margin-bottom: 20px;
+  }
+}

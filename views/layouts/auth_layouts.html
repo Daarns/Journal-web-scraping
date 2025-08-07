@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="format-detection" content="email=no">
+    <meta name="autocomplete" content="off">
+    <link rel="icon" href="data:,">
+    <title>{% block title %}Knowvera{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/auth.css?v=1.0">
+    {% block additional_styles %}{% endblock %}
+</head>
+<body style="background: rgb(2, 3, 19);">
+    <div class="d-flex min-vh-100 align-items-center justify-content-center">
+        <main class="login-container">
+            <!-- Header with logo -->
+            <div class="text-center mb-4">
+                <h1 class="text-white logo-text">{% block header_title %}Knowvera{% endblock %}</h1>
+              
+            </div>
+
+            {% block content %}{% endblock %}
+
+            <!-- Footer -->
+            <div class="text-center mt-4">
+                <div class="text-center mt-2" style="font-size: 0.75rem; color: #C5C5D2;">
+                    <i class="fas fa-shield-alt me-1"></i> 
+                    Secure login with industry standard encryption
+                </div>
+            </div>
+        </main>
+    </div>
+
+    {% block scripts %}
+      <script>
+        // Mencegah browser menyimpan data input
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        
+        // Fungsi untuk menangani form input berdasarkan status halaman
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cek apakah ini halaman login dengan registered=true
+            const urlParams = new URLSearchParams(window.location.search);
+            const registered = urlParams.get('registered');
+            
+            console.log("Auth layout loaded, path:", window.location.pathname);
+            console.log("Registered param:", registered);
+            
+            // Reset semua form kecuali login dengan registered=true
+            if (window.location.pathname === '/login' && registered === 'true') {
+                console.log("Login page with registered=true detected - preserving input values");
+                // Biarkan input tetap ada untuk halaman login setelah registrasi
+                
+                // Catat bahwa halaman sudah dimuat dengan registered=true
+                sessionStorage.setItem('loginFromRegistration', 'true');
+                
+                // Tambahkan flag untuk menghindari pembersihan oleh script lain
+                sessionStorage.setItem('preserveLoginInputs', 'true');
+                
+                // Jangan menjalankan kode clean-up lainnya
+                return;
+            } else {
+                console.log("Standard page load - clearing form inputs");
+                // Untuk semua halaman lain atau jika bukan dari registrasi, kosongkan input
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    form.reset();
+                    // Kosongkan semua input field
+                    const inputs = form.querySelectorAll('input');
+                    inputs.forEach(input => {
+                        input.value = '';
+                        // Set atribut autocomplete untuk mencegah browser mengisi otomatis
+                        input.setAttribute('autocomplete', 'new-password');
+                    });
+                });
+                
+                // Hapus flag preserveLoginInputs jika ada
+                sessionStorage.removeItem('preserveLoginInputs');
+            }
+            
+            // Tambahkan event listener untuk deteksi refresh halaman
+            window.addEventListener('beforeunload', function() {
+                // Jika bukan halaman dari registrasi, tandai untuk di-refresh
+                if (!(window.location.pathname === '/login' && registered === 'true')) {
+                    sessionStorage.setItem('pageRefreshed', 'true');
+                }
+            });
+            
+            // Jika halaman di-refresh dan BUKAN dari registrasi, kosongkan input
+            if (sessionStorage.getItem('pageRefreshed') === 'true' && 
+                !(window.location.pathname === '/login' && registered === 'true')) {
+                console.log("Page refresh detected - clearing inputs");
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    form.reset();
+                    const inputs = form.querySelectorAll('input');
+                    inputs.forEach(input => {
+                        input.value = '';
+                        // Set atribut autocomplete untuk mencegah browser mengisi otomatis
+                        input.setAttribute('autocomplete', 'new-password');
+                    });
+                });
+                // Reset flag refresh
+                sessionStorage.removeItem('pageRefreshed');
+            }
+            
+            // Handle form submission
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function() {
+                    // Simpan flag di sessionStorage bahwa form telah disubmit
+                    sessionStorage.setItem('formSubmitted', 'true');
+                });
+            });
+                
+            // Jika halaman di-refresh setelah submit, reset semua form
+            if (sessionStorage.getItem('formSubmitted') === 'true' &&
+                !(window.location.pathname === '/login' && registered === 'true')) {
+                console.log("Form was submitted previously - clearing inputs");
+                sessionStorage.removeItem('formSubmitted');
+                forms.forEach(form => form.reset());
+            }
+            
+            // Perbaikan styling untuk memastikan form terlihat dengan benar
+            document.querySelectorAll('.form-outline input').forEach(input => {
+                // Atur styling input
+                input.style.backgroundColor = 'rgba(12, 14, 35, 0.6)';
+                input.style.color = 'white';
+                
+                // Tambahkan event listener untuk membersihkan autofill
+                input.addEventListener('animationstart', function(e) {
+                    if (e.animationName.includes('autofill')) {
+                        this.style.backgroundColor = 'rgba(12, 14, 35, 0.6)';
+                        this.style.color = 'white';
+                    }
+                });
+                
+                // Override autofill browser styling
+                input.addEventListener('focus', function() {
+                    this.style.backgroundColor = 'rgba(12, 14, 35, 0.6)';
+                    this.style.color = 'white';
+                });
+            });
+        });
+        
+        // Fungsi untuk menghindari caching form
+        (function() {
+            // Run on window load to clean form data that might be cached
+            window.addEventListener('load', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const registered = urlParams.get('registered');
+                
+                // Jika bukan registered=true, paksa clear inputs
+                if (!(window.location.pathname === '/login' && registered === 'true')) {
+                    console.log("Window load - clearing inputs (except for registered=true)");
+                    setTimeout(function() {
+                        document.querySelectorAll('input:not([type="button"]):not([type="submit"])').forEach(input => {
+                            input.value = '';
+                        });
+                    }, 100);
+                }
+            });
+        })();
+    </script>
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+{% extends "layouts/auth_layouts.html" %}
+
+{% block title %}Register - Knowvera{% endblock %}
+
+{% block header_title %}Buat Akun{% endblock %}
+
+{% block content %}
+<!-- Register Form -->
+<form id="register-form">
+    <!-- CSRF Token (hidden) -->
+    <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token }}">
+
+    <!-- Error message area -->
+    <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+
+    <!-- Name input -->
+    <div class="form-outline">
+        <input type="text" id="nameInput" placeholder=" " required>
+        <label for="nameInput">Full Name</label>
+    </div>
+
+    <!-- Email input with label in border -->
+    <div class="form-outline">
+        <input type="email" id="emailInput" placeholder=" " required>
+        <label for="emailInput">Email</label>
+    </div>
+
+    <!-- Username input -->
+    <div class="form-outline">
+        <input type="text" id="usernameInput" placeholder=" " required>
+        <label for="usernameInput">Username</label>
+    </div>
+
+    <!-- Password input with label in border -->
+    <div class="form-outline">
+        <input type="password" id="passwordInput" placeholder=" " required>
+        <label for="passwordInput">Password</label>
+    </div>
+
+    <!-- Continue button -->
+    <div class="d-grid gap-2 mb-3">
+        <button type="submit" id="register-button" class="btn btn-primary btn-lg">Create Account</button>
+    </div>
+
+    <!-- Already have an account section -->
+    <div class="text-center text-white">
+        Already have an account?
+        <a href="/login" class="auth-link">Sign in</a>
+    </div>
+
+    <!-- Separator -->
+    <div class="position-relative my-4">
+        <hr class="text-secondary">
+        <div class="position-absolute top-50 start-50 translate-middle px-3" style="background-color: rgb(2, 3, 19);">
+            <span class="text-secondary">Or</span>
+        </div>
+    </div>
+
+    <!-- Continue with Google button -->
+    <div class="d-grid gap-2">
+        <button type="button" id="google-register-btn"
+            class="btn btn-outline-light btn-lg d-flex justify-content-center align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#FFC107"
+                    d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z">
+                </path>
+                <path fill="#FF3D00"
+                    d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z">
+                </path>
+                <path fill="#4CAF50"
+                    d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z">
+                </path>
+                <path fill="#1976D2"
+                    d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z">
+                </path>
+            </svg>
+            Continue with Google
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const registerForm = document.getElementById('register-form');
+        const registerButton = document.getElementById('register-button');
+        const errorMessage = document.getElementById('error-message');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordFeedback = document.createElement('div');
+        const csrfToken = document.getElementById('csrf_token').value;
+
+        // Reset form dan clear semua input saat halaman dimuat
+        registerForm.reset();
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (input.type !== 'hidden') { // Don't clear CSRF token
+                input.value = '';
+            }
+        });
+
+        // Tambahkan atribut autocomplete untuk mencegah browser menyimpan data
+        document.getElementById('nameInput').setAttribute('autocomplete', 'off');
+        document.getElementById('emailInput').setAttribute('autocomplete', 'off');
+        document.getElementById('usernameInput').setAttribute('autocomplete', 'off');
+        document.getElementById('passwordInput').setAttribute('autocomplete', 'new-password');
+
+        // Tandai bahwa halaman register telah dimuat
+        sessionStorage.setItem('registerPageLoaded', new Date().getTime());
+
+        // Deteksi refresh halaman
+        window.addEventListener('beforeunload', function () {
+            sessionStorage.setItem('registerPageRefreshed', 'true');
+        });
+
+        // Jika halaman di-refresh, kosongkan semua input
+        if (sessionStorage.getItem('registerPageRefreshed') === 'true') {
+            inputs.forEach(input => {
+                if (input.type !== 'hidden') { // Don't clear CSRF token
+                    input.value = '';
+                }
+            });
+            sessionStorage.removeItem('registerPageRefreshed');
+        }
+
+        // Tambahkan elemen feedback password setelah input password
+        passwordFeedback.className = 'password-feedback mt-2 small';
+        passwordInput.parentNode.appendChild(passwordFeedback);
+
+        // Fungsi untuk validasi password
+        function validatePassword(password) {
+            const minLength = 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            const errors = [];
+            let strength = 0;
+
+            // Cek kriteria
+            if (password.length < minLength) {
+                errors.push(`Minimal ${minLength} karakter`);
+            } else {
+                strength += 1;
+            }
+
+            if (!hasUpperCase) {
+                errors.push("Satu huruf kapital");
+            } else {
+                strength += 1;
+            }
+
+            if (!hasLowerCase) {
+                errors.push("Satu huruf kecil");
+            } else {
+                strength += 1;
+            }
+
+            if (!hasNumbers) {
+                errors.push("Satu angka");
+            } else {
+                strength += 1;
+            }
+
+            if (!hasSpecialChars) {
+                errors.push("Satu karakter khusus (!@#$%^&*,.?)");
+            } else {
+                strength += 1;
+            }
+
+            return {
+                isValid: errors.length === 0,
+                errors: errors,
+                strength: strength
+            };
+        }
+
+        // Event listener untuk input password real-time
+        passwordInput.addEventListener('input', function () {
+            const password = this.value;
+            const validation = validatePassword(password);
+
+            // Update feedback UI
+            let feedbackHTML = '<div class="password-strength-meter mb-1">';
+            for (let i = 0; i < 5; i++) {
+                const strengthClass = i < validation.strength ?
+                    (validation.strength <= 2 ? 'weak' : validation.strength <= 4 ? 'medium' : 'strong') : '';
+                feedbackHTML += `<div class="strength-segment ${strengthClass}"></div>`;
+            }
+            feedbackHTML += '</div>';
+
+            if (validation.errors.length > 0) {
+                feedbackHTML += '<ul class="text-white-50 ps-3 mb-0">';
+                validation.errors.forEach(error => {
+                    feedbackHTML += `<li>${error}</li>`;
+                });
+                feedbackHTML += '</ul>';
+            } else {
+                feedbackHTML += '<p class="text-success mb-0">Password memenuhi semua kriteria</p>';
+            }
+
+            passwordFeedback.innerHTML = feedbackHTML;
+        });
+
+        // Handle form submission
+        registerForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Reset error message
+            errorMessage.style.display = 'none';
+
+            // Get form data
+            const name = document.getElementById('nameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const username = document.getElementById('usernameInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            // Validasi client-side
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation.isValid) {
+                errorMessage.innerHTML = 'Password tidak memenuhi persyaratan keamanan:<br>' +
+                    passwordValidation.errors.map(err => `- ${err}`).join('<br>');
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Disable button and show loading state
+            registerButton.disabled = true;
+            registerButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating account...';
+
+            try {
+                // Dapatkan returnUrl jika ada (misalnya dari query string)
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('returnUrl') || '/search';
+
+                // Send registration request with CSRF token
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    body: JSON.stringify({
+                        full_name: name,
+                        email,
+                        username,
+                        password,
+                        csrf_token: csrfToken
+                    }),
+                    credentials: 'include'
+                });
+
+                // Parse response
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Simpan username dan password ke sessionStorage untuk digunakan di halaman login
+                    const loginInfo = {
+                        email: email,
+                        password: password
+                    };
+
+                    // Pastikan data disimpan dengan benar - gunakan JSON.stringify
+                    sessionStorage.setItem('registrationLoginInfo', JSON.stringify(loginInfo));
+                    console.log("Saving registration data:", loginInfo);
+
+                    // Reset form setelah registrasi berhasil
+                    registerForm.reset();
+
+                    // Successful registration - redirect to login
+                    window.location.href = '/login?registered=true&returnUrl=' + encodeURIComponent(returnUrl);
+                } else {
+                    // Show error message
+                    errorMessage.textContent = data.detail || 'Registration failed';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                // Show network error
+                errorMessage.textContent = 'Network error. Please try again.';
+                errorMessage.style.display = 'block';
+                console.error('Registration error:', error);
+            } finally {
+                // Reset button state
+                registerButton.disabled = false;
+                registerButton.innerHTML = 'Create Account';
+            }
+        });
+
+        // Google registration dengan retainUrl
+        document.getElementById('google-register-btn').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Dapatkan returnUrl jika ada
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('returnUrl') || '/search';
+
+            // Redirect ke Google OAuth dengan returnUrl sebagai parameter
+            window.location.href = `/api/auth/google?return_url=${encodeURIComponent(returnUrl)}`;
+        });
+    });
+</script>
+{% endblock %}

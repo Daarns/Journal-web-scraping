@@ -1,0 +1,470 @@
+{% extends "layouts/app_layouts.html" %}
+
+{% block title %}Knowvera - Academic Paper Search{% endblock %}
+
+{% block content %}
+<style>
+  /* Gaya kustom untuk card sitasi */
+  .citation-result .card {
+    background-color: #121a30 !important;
+    border-color: #192338 !important;
+  }
+  
+  .citation-result .card-footer {
+    background-color: #10192b !important;
+    border-top-color: #1c2842 !important;
+  }
+  
+  .citation-text {
+    color: #e9ecef;
+  }
+  
+  .copy-citation-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+</style>
+<div class="row g-0">
+  <div class="col-md-6 left-section">
+    <div id="search-form" class="search-container">
+      <div class="query-area">
+        <textarea class="form-control search-query" rows="4"
+          placeholder="Saya sedang mencari jurnal tentang">Saya sedang mencari jurnal tentang AI di bidang kedokteran antara tahun 2020 sampai 2024</textarea>
+      </div>
+
+      <!-- Tombol pencarian -->
+      <button id="search-button" class="btn btn-primary mt-2">
+        <span class="search-text">Cari Jurnal</span>
+        <div class="spinner-border spinner-border-sm d-none" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
+
+      <div class="suggested-queries mt-4">
+        <small class="text-muted-result">Pencarian terkait:</small>
+        <div class="suggested-queries-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 right-section">
+    <!-- Empty state untuk halaman pertama kali -->
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" viewBox="0 0 16 16">
+          <path
+            d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+        </svg>
+      </div>
+      <h2 class="empty-title">Belum ada pencarian</h2>
+      <p class="empty-text">Silakan ketik pertanyaan Anda untuk mencari jurnal...</p>
+    </div>
+
+    <!-- Loading state saat pencarian berjalan -->
+    <div class="loading-state d-none">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <h3 class="mt-3">Sedang mencari jurnal...</h3>
+      <p class="text-muted">Mohon tunggu sebentar</p>
+    </div>
+
+    <!-- Results area untuk hasil pencarian -->
+    <div class="results-area d-none">
+      <!-- Papers list area -->
+      <div class="papers-list"></div>
+
+      <!-- Pagination controls -->
+      <div class="pagination-container mt-4">
+        <nav aria-label="Navigasi hasil pencarian">
+          <ul class="pagination justify-content-center"></ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<!-- Modal Guest Info -->
+<div class="modal fade" id="guestInfoModal" tabindex="-1" aria-labelledby="guestInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="guestInfoModalLabel">Selamat Datang di Knowvera</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-info-circle me-3 text-primary" style="font-size: 2rem;"></i>
+          <div>
+            <h5 class="mb-1">Anda menggunakan Knowvera sebagai Tamu</h5>
+            <p class="text-secondary mb-0">Fitur terbatas tersedia untuk pengguna tamu.</p>
+          </div>
+        </div>
+
+        <div class="available-features mt-4">
+          <h6>Fitur yang tersedia untuk tamu:</h6>
+          <ul class="feature-list">
+            <li><i class="fas fa-check-circle text-success"></i> Mencari jurnal dan paper</li>
+            <li><i class="fas fa-check-circle text-success"></i> Melihat paper</li>
+            <li><i class="fas fa-check-circle text-success"></i> Membuat ringkasan paper</li>
+            <li><i class="fas fa-check-circle text-success"></i> Tanya jawab AI tentang paper (tidak tersimpan)</li>
+          </ul>
+
+          <h6 class="mt-3">Fitur khusus pengguna login:</h6>
+          <ul class="feature-list">
+            <li><i class="fas fa-lock text-muted"></i> Menyimpan riwayat pencarian</li>
+            <li><i class="fas fa-lock text-muted"></i> Membuat koleksi paper</li>
+            <li><i class="fas fa-lock text-muted"></i> Menyimpan dan membagikan sitasi</li>
+            <li><i class="fas fa-lock text-muted"></i> Menyimpan percakapan AI</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <div class="d-grid gap-2 w-100">
+          <a href="/login?returnUrl=/search" class="btn btn-primary">Login</a>
+          <a href="/register" class="btn btn-outline-light">Daftar</a>
+          <button type="button" class="btn btn-link text-white-50" data-bs-dismiss="modal">Lanjutkan sebagai
+            Tamu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ringkasan Paper -->
+<div class="modal fade" id="summaryModal" tabindex="-1" aria-labelledby="summaryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center">
+          <div class="summary-icon me-2">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h5 class="modal-title" id="summaryModalTitle">Ringkasan Paper</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="summaryModalContent" class="summary-container"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex justify-content-between w-100">
+          <button type="button" class="btn btn-primary copy-summary-btn">
+            <i class="fas fa-copy"></i> Salin Ringkasan
+            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Tutup</button>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Chat untuk Fitur Tanya -->
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center">
+          <div class="chat-icon me-2">
+            <i class="fas fa-comment-alt"></i>
+          </div>
+          <h5 class="modal-title" id="chatModalTitle">Tanya tentang Paper</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div id="chatPdfNotice" class="mb-3 d-none"></div>
+
+        <div id="chatContainer" class="chat-container">
+          <!-- Chat messages will be inserted here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex justify-content-between w-100">
+          <div class="chat-actions">
+            <!-- Tombol aksi khusus seperti upload PDF akan ditambahkan di sini secara dinamis -->
+          </div>
+          <div class="input-group">
+            <input type="text" class="form-control modal-question-input" id="modalQuestionInput"
+              placeholder="Masukkan pertanyaan Anda...">
+            <button class="btn btn-primary send-question-btn" type="button">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Sitasi -->
+<div class="modal fade" id="citationModal" tabindex="-1" aria-labelledby="citationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center">
+          <div class="citation-icon me-2">
+            <i class="fas fa-quote-right"></i>
+          </div>
+          <h5 class="modal-title" id="citationModalLabel">Pilih Format Sitasi</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white citation-close-btn" data-bs-dismiss="modal" aria-label="Close" onclick="handleCitationModalClose(event)"></button>
+      </div>
+      <div class="modal-body">
+        <p class="paper-citation-title mb-4"></p>
+
+        <div class="citation-styles">
+          <p class="mb-3">Pilih format sitasi yang Anda inginkan:</p>
+          <div class="citation-style-options d-flex flex-wrap gap-2">
+            <button class="btn btn-outline-primary citation-style-btn" data-style="APA">APA</button>
+            <button class="btn btn-outline-primary citation-style-btn" data-style="MLA">MLA</button>
+            <button class="btn btn-outline-primary citation-style-btn" data-style="Chicago">Chicago</button>
+            <button class="btn btn-outline-primary citation-style-btn" data-style="Harvard">Harvard</button>
+            <button class="btn btn-outline-primary citation-style-btn" data-style="Vancouver">Vancouver</button>
+            <button class="btn btn-outline-primary citation-style-btn" data-style="IEEE">IEEE</button>
+          </div>
+        </div>
+
+        <div class="citation-loading mt-4 d-none">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="ms-3">Menghasilkan sitasi...</div>
+          </div>
+        </div>
+
+        <div class="citation-result mt-4 d-none">
+          <div class="card bg-dark">
+            <div class="card-body">
+              <p class="citation-text mb-0"></p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-sm btn-outline-light copy-citation-btn">
+                <i class="fas fa-copy"></i> Salin
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Collections -->
+<div class="modal fade" id="addToCollectionModal" tabindex="-1" aria-labelledby="addToCollectionModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center">
+          <div class="collection-icon me-2">
+            <i class="fas fa-folder"></i>
+          </div>
+          <h5 class="modal-title" id="addToCollectionModalLabel">Simpan ke Koleksi</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="paper-collection-title mb-3"></p>
+
+        <!-- Pesan saat belum ada koleksi -->
+        <div class="no-collections d-none">
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Anda belum memiliki koleksi. Silakan buat koleksi baru.
+          </div>
+        </div>
+
+        <!-- Pilih koleksi yang sudah ada -->
+        <div class="add-to-existing-section mb-4">
+          <label for="collectionSelect" class="form-label">Pilih koleksi:</label>
+          <select class="form-select bg-dark text-white" id="collectionSelect">
+            <option value="" disabled selected>Loading collections...</option>
+          </select>
+        </div>
+
+        <!-- Form buat koleksi baru -->
+        <div class="create-new-section d-none">
+          <h6 class="mb-3">Buat koleksi baru</h6>
+          <div class="mb-3">
+            <label for="newCollectionName" class="form-label">Nama koleksi:</label>
+            <input type="text" class="form-control bg-dark text-white" id="newCollectionName"
+              placeholder="Contoh: Machine Learning Papers">
+          </div>
+          <div class="mb-3">
+            <label for="newCollectionDesc" class="form-label">Deskripsi (opsional):</label>
+            <textarea class="form-control bg-dark text-white" id="newCollectionDesc" rows="2"
+              placeholder="Deskripsi singkat tentang koleksi ini..."></textarea>
+          </div>
+        </div>
+
+        <!-- Catatan opsional tentang paper -->
+        <div class="mb-3 paper-notes-section">
+          <label for="paperNotes" class="form-label">Catatan tentang paper ini (opsional):</label>
+          <textarea class="form-control bg-dark text-white" id="paperNotes" rows="2"
+            placeholder="Tambahkan catatan pribadi tentang paper ini..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary save-to-collection-btn">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Add to Collection -->
+<div class="modal fade" id="addToCollectionModal" tabindex="-1" aria-labelledby="addToCollectionModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addToCollectionModalTitle">Tambahkan ke Koleksi</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="paper-to-save-info mb-3">
+          <p class="paper-save-title fw-bold mb-1"></p>
+          <p class="paper-save-authors text-muted mb-0 small"></p>
+        </div>
+
+        <div class="collection-selection">
+          <label for="collectionSelect">Pilih Koleksi:</label>
+          <select class="form-select" id="collectionSelect">
+            <!-- Collections will be loaded here -->
+          </select>
+
+          <div class="no-collections d-none mt-3">
+            <p class="text-center">Belum ada koleksi. Buat koleksi baru terlebih dahulu.</p>
+          </div>
+
+          <div class="mt-3">
+            <button id="createCollectionBtn" class="btn btn-sm btn-outline-light">
+              <i class="fas fa-plus"></i> Buat Koleksi Baru
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="confirmAddToCollection">Tambahkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Create Collection -->
+<div class="modal fade" id="createCollectionModal" tabindex="-1" aria-labelledby="createCollectionModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createCollectionModalTitle">Buat Koleksi Baru</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="createCollectionForm">
+          <div class="mb-3">
+            <label for="collectionName" class="form-label">Nama Koleksi</label>
+            <input type="text" class="form-control" id="collectionName" required>
+          </div>
+          <div class="mb-3">
+            <label for="collectionDescription" class="form-label">Deskripsi (opsional)</label>
+            <textarea class="form-control" id="collectionDescription" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="saveNewCollection">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Activity History -->
+<div class="modal fade" id="activityHistoryModal" tabindex="-1" aria-labelledby="activityHistoryModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center">
+          <div class="history-icon me-2">
+            <i class="fas fa-history"></i>
+          </div>
+          <h5 class="modal-title">Riwayat Aktivitas</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" id="activityTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="viewed-tab" data-bs-toggle="tab" data-bs-target="#viewed" type="button">
+              Jurnal Dilihat
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="revisited-tab" data-bs-toggle="tab" data-bs-target="#revisited" type="button">
+              Sering Dilihat
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="summarized-tab" data-bs-toggle="tab" data-bs-target="#summarized"
+              type="button">
+              Diringkas
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="questioned-tab" data-bs-toggle="tab" data-bs-target="#questioned"
+              type="button">
+              Ditanyakan
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="activityTabContent">
+          <div class="tab-pane fade show active" id="viewed" role="tabpanel">
+            <div class="viewed-papers activity-list">
+              <!-- Viewed papers will be loaded here -->
+              <div class="text-center py-5 loading-indicator">
+                <div class="spinner-border text-light" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="revisited" role="tabpanel">
+            <div class="revisited-papers activity-list">
+              <!-- Frequently viewed papers will be loaded here -->
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="summarized" role="tabpanel">
+            <div class="summarized-papers activity-list">
+              <!-- Summarized papers will be loaded here -->
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="questioned" role="tabpanel">
+            <div class="questioned-papers activity-list">
+              <!-- Papers that had questions asked will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<!-- PENTING: Urutan script harus benar - search.js dulu, pagination.js setelahnya -->
+<script src="{{ url_for('static', path='js/citation.js') }}"></script>
+<script src="{{ url_for('static', path='js/search.js') }}"></script>
+<script src="{{ url_for('static', path='js/activity.js') }}"></script>
+<script src="{{ url_for('static', path='js/collection.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,262 @@
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.backup
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.pytest_cache/
+
+# Node modules (jika ada)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Uploads dan temporary files
+uploads/
+temp/
+tmp/
+
+# API Keys dan Credentials
+*.key
+*.pem
+credentials.json
+token.json
+
+# User-specific files
+.user
+user_data/
+user_uploads/
+
+# PDF files (untuk menghindari file besar)
+*.pdf
+pdfs/
+
+# Model files (biasanya besar)
+models/
+*.model
+*.pkl
+*.h5
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Local development
+local_settings.py
+settings_local.py
+
+# Development/Testing scripts
+run.py
+test_*.py
+debug_*.py
+
+# Generate scripts (might contain sensitive data)
+generate_secret_key.py
+
+# ✅ TAMBAHAN UNTUK KNOWVERA PROJECT:
+
+# Application-specific logs dan cache
+knowvera.log
+app.log
+search.log
+chat.log
+
+# User sessions dan activity logs
+sessions/
+activity_logs/
+user_activity.json
+
+# Collections dan user data
+collections_backup/
+user_collections/
+
+# Chat history dan temporary files
+chat_history/
+chat_temp/
+temp_chat/
+
+# PDF extraction cache
+pdf_cache/
+extracted_text/
+pdf_analysis/
+
+# Search cache dan temporary results
+search_cache/
+temp_results/
+query_cache/
+
+# Citation files
+citations/
+export_citations/
+*.bib
+*.ris
+*.enw
+
+# Email templates backup
+email_backup/
+template_backup/
+
+# Assets cache
+assets/cache/
+css/compiled/
+js/minified/
+
+# Development utilities
+utils/test_*
+scripts/debug_*
+scripts/temp_*
+
+# AI model cache
+model_cache/
+ai_cache/
+gemini_cache/
+
+# Security dan authentication cache
+auth_cache/
+oauth_temp/
+token_cache/
+
+# Error screenshots (untuk debugging)
+error_screenshots/
+debug_images/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Session files
+.session
+sessions/
+
+# Cache
+.cache/
+__pycache__/
+*.pyc
+.sass-cache/
+
+# Documentation builds
+docs/_build/
+site/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ✅ KEEP THESE FILES (dokumentasi project):
+!docs/
+!docs/screenshots/
+!docs/screenshots/*.png
+!docs/screenshots/*.jpg
+!docs/screenshots/*.gif
+!README.md
+!LICENSE
+!requirements.txt
+!.env.example

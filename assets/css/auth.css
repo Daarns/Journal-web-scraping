@@ -1,0 +1,219 @@
+.form-outline {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-outline input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #565869;
+    border-radius: 6px;
+    background-color: transparent;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+}
+
+.form-outline label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: #8E8EA0;
+    padding: 0;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* When input is focused or has content */
+.form-outline input:focus,
+.form-outline input:not(:placeholder-shown) {
+    border-color: #10A37F;
+    padding-top: 18px;
+    padding-bottom: 10px;
+}
+
+.form-outline input:focus + label,
+.form-outline input:not(:placeholder-shown) + label {
+    top: 0;
+    left: 10px;
+    font-size: 0.75rem;
+    padding: 0 5px;
+    background-color: rgb(2, 3, 19);
+    color: #10A37F;
+}
+
+.form-outline input:focus {
+    box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.25);
+}
+
+.btn-primary {
+    background-color: #10A37F;
+    border-color: #10A37F;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #0D8C6D;
+    border-color: #0D8C6D;
+}
+
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.logo-text {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Link styles */
+.auth-link {
+    color: #10A37F;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+    color: #0D8C6D;
+}
+
+/* Form validation */
+.form-outline input.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+/* Separator with text */
+.separator {
+    position: relative;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.separator hr {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    margin: 0;
+}
+
+.separator span {
+    position: relative;
+    padding: 0 15px;
+    background: rgb(2, 3, 19);
+    color: #8E8EA0;
+}
+
+/* Password strength meter */
+.password-strength-meter {
+    display: flex;
+    gap: 5px;
+    margin-top: 0.5rem;
+}
+
+.strength-segment {
+    height: 5px;
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.strength-segment.weak {
+    background-color: #dc3545;
+}
+
+.strength-segment.medium {
+    background-color: #ffc107;
+}
+
+.strength-segment.strong {
+    background-color: #28a745;
+}
+
+.password-feedback {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+}
+
+.password-feedback ul {
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+/* Tambahan untuk styling input */
+
+/* Override untuk input autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgba(12, 14, 35, 0.6) inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+    font-size: inherit !important;
+    background-color: rgba(12, 14, 35, 0.6) !important;
+}
+
+/* Perbaikan warna untuk input */
+.form-outline input {
+    background-color: rgba(12, 14, 35, 0.6) !important;
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+    caret-color: white !important;
+    border: 1px solid #565869 !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Memperbaiki label saat input memiliki nilai */
+.form-outline input:not(:placeholder-shown) + label {
+    top: 0 !important;
+    left: 10px !important;
+    font-size: 0.75rem !important;
+    padding: 0 5px !important;
+    background-color: rgb(2, 3, 19) !important;
+    color: #10A37F !important;
+}
+
+/* Fokus input */
+.form-outline input:focus {
+    box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.25) !important;
+    border-color: #10A37F !important;
+    background-color: rgba(12, 14, 35, 0.6) !important;
+}
+
+/* Animation untuk mencegah autofill default browser */
+@keyframes autofill {
+    to {
+        color: white;
+        background-color: rgba(12, 14, 35, 0.6);
+    }
+}
+
+input:-webkit-autofill {
+    animation-name: autofill;
+    animation-fill-mode: both;
+}
+
+/* Peningkatan tampilan tombol */
+.btn-primary {
+    background-color: #10A37F !important;
+    border-color: #10A37F !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btn-primary:hover, 
+.btn-primary:focus {
+    background-color: #0D8C6D !important;
+    border-color: #0D8C6D !important;
+}
+
+/* Animasi transisi halus */
+.form-outline input,
+.form-outline label,
+.btn-primary {
+    transition: all 0.3s ease !important;
+}

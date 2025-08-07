@@ -1,0 +1,1663 @@
+body {
+  background: rgb(2, 3, 19);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  background-color: rgb(12, 14, 35);
+  border-radius: 15px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 90%; 
+  min-height: auto;
+  height: calc(100vh - 40px); /* Menetapkan tinggi agar sesuai viewport */
+  overflow: hidden; /* Penting: mencegah scroll pada container utama */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto !important;
+  width: 90% !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* Navbar styling */
+.navbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Border transparan untuk tema gelap */
+  padding: 15px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: rgb(12, 14, 35);
+}
+
+.navbar-spacer {
+  flex-grow: 1;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo-icon img {
+  width: 60px;
+  height: 60px;
+  margin-left: 4px;
+  filter: brightness(0) invert(1); /* Membuat logo putih untuk tema gelap */
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+}
+
+.navbar-nav {
+  flex-shrink: 0;
+}
+
+.navbar-nav .nav-link {
+  color: white; /* Ubah dari #2e3b4e menjadi putih */
+  font-weight: 500;
+  margin-left: 20px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #4285f4; /* Efek hover biru seperti di halaman lain */
+}
+
+/* Content area */
+.content-area {
+  height: 100%; /* Mengisi seluruh tinggi dari main-container */
+  min-height: 0; /* Hapus min-height */
+  display: flex;
+  flex: 1;
+  overflow: hidden; /* Hindari scroll pada content area */
+  width: 100%;
+  max-width: 100%;
+}
+
+.row.g-0 {
+  display: flex;
+  width: 100%;
+  height: 100%; /* Biarkan menyesuaikan konten */
+  min-height: 0; /* Hapus min-height */
+  margin: 0 auto;
+}
+
+
+/* Left section */
+.left-section {
+  padding: 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: hidden;
+  position: relative;
+  z-index: 10; /* Menaikkan z-index left section */
+  padding-bottom: 40px; /* Memberikan ruang untuk konten di bawah */
+  max-height: 100%;
+}
+
+.right-section {
+  height: 100%; /* Biarkan menyesuaikan konten */
+  min-height: auto; /* Hapus min-height yang kaku */
+  overflow-y: auto; /* Ubah dari auto ke visible */
+  overflow-x: hidden; /* Ubah dari auto ke visible */
+  padding-bottom: 40px; /* Kurangi padding bawah */
+  padding-top: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Perbaikan warna input dan textarea */
+.search-query {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 16px;
+  resize: none;
+  -webkit-text-fill-color: white !important;
+}
+
+.question-input {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border-radius: 10px;
+  padding: 12px 15px;
+  font-size: 16px;
+  -webkit-text-fill-color: white !important;
+}
+
+.search-query:focus,
+.question-input:focus {
+  border-color: #4285f4 !important;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.25);
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  outline: none;
+  color: white !important;
+}
+
+/* Warna placeholder */
+::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  opacity: 1;
+}
+
+::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Mengatasi autofill browser */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px rgb(12, 14, 35) inset !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.text-muted-results {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Override untuk Bootstrap */
+.form-control.search-query,
+.form-control.question-input {
+  color: white !important;
+  caret-color: white !important;
+}
+
+.form-control:focus {
+  color: white !important;
+}
+
+.tags-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.tag {
+  background-color: rgba(66, 133, 244, 0.15);
+  color: #4285f4;
+  border: 1px solid rgba(66, 133, 244, 0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.tag:hover {
+  background-color: rgba(66, 133, 244, 0.25);
+  cursor: pointer;
+}
+
+.welcome-message {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background-color: rgba(12, 14, 35, 0.4);
+  border-radius: 8px;
+}
+
+/* Custom text-muted style */
+.text-subtle {
+  color: #a0a0a0 !important;
+  opacity: 0.8;
+}
+
+/* Styled user button */
+.user-btn {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 20px;
+  padding: 0.375rem 1rem;
+  transition: background-color 0.2s;
+}
+
+.user-btn:hover,
+.user-btn:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Right section */
+
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  max-width: 400px;
+  margin: auto;
+}
+
+.empty-icon {
+  color: #4285f4;
+  opacity: 0.5;
+  margin-bottom: 20px;
+}
+
+.empty-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: white; /* Ubah dari #2e3b4e menjadi putih */
+  margin-bottom: 10px;
+}
+
+.empty-text {
+  font-size: 16px;
+  color: #c5c5d2; /* Warna abu-abu cerah yang lebih sesuai dengan tema gelap */
+}
+
+/* ===== AVATAR STYLING ===== */
+/* Avatar styling untuk semua ukuran */
+.user-avatar,
+.user-avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50% !important; /* Memastikan bentuk lingkaran */
+  overflow: hidden;
+  background-color: #4285f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Mencegah avatar menyusut */
+  box-sizing: border-box; /* Memastikan padding tidak mempengaruhi dimensi */
+  position: relative; /* Untuk positioning yang lebih baik */
+}
+
+/* Avatar ukuran kecil (untuk search) */
+.user-avatar-small {
+  width: 24px;
+  height: 24px;
+  min-width: 24px; /* Mencegah penyusutan dalam flexbox */
+  min-height: 24px;
+}
+
+/* Placeholder avatar (untuk inisial) */
+.avatar-placeholder,
+.avatar-placeholder-small {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  border-radius: 50% !important;
+  position: absolute; /* Memastikan posisi tepat */
+  top: 0;
+  left: 0;
+}
+
+/* Initial styling */
+.user-initial,
+.user-initial-small {
+  font-size: 16px;
+  text-transform: uppercase;
+  line-height: 1; /* Mencegah spasi yang tidak perlu */
+}
+
+.user-initial-small {
+  font-size: 12px;
+}
+
+/* Avatar image */
+.avatar-image,
+.avatar-image-small {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50% !important;
+  position: absolute; /* Memastikan posisi tepat */
+  top: 0;
+  left: 0;
+}
+
+/* User button dengan avatar */
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Jarak antara avatar dan teks */
+  padding-left: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.user-btn:hover,
+.user-btn:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .main-container {
+    margin: 0 !important;
+    width: 100% !important;
+    border-radius: 0;
+  }
+
+  .content-area {
+    height: auto;
+  }
+
+  .row {
+    height: auto;
+  }
+
+  .left-section {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .right-section {
+    padding: 40px 20px;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  /* Tambahan untuk mobile */
+  .search-query {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .question-input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .empty-icon svg {
+    width: 80px;
+    height: 80px;
+  }
+
+  .empty-title {
+    font-size: 20px;
+  }
+
+  .empty-text {
+    font-size: 14px;
+  }
+
+  /* Avatar pada mobile */
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .user-avatar-small {
+    width: 20px;
+    height: 20px;
+  }
+
+  .user-initial {
+    font-size: 14px;
+  }
+
+  .user-initial-small {
+    font-size: 10px;
+  }
+}
+
+/* Animasi subtle pada SVG icon empty state */
+.empty-icon svg {
+  transition: all 0.5s ease;
+}
+
+.empty-state:hover .empty-icon svg {
+  transform: translateY(-5px);
+}
+
+/* Paper item styling */
+.paper-item {
+  background: rgba(30, 35, 60, 0.9);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.paper-item a {
+  color: #4285f4;
+  text-decoration: none;
+}
+
+.paper-item a:hover {
+  color: #5e97f5;
+  text-decoration: underline;
+}
+
+.paper-details {
+  background-color: rgba(
+    22,
+    25,
+    45,
+    0.7
+  ); /* Sedikit lebih gelap dari paper item */
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Summary section ketika expanded */
+.summary-content {
+  background-color: rgba(12, 14, 35, 0.7);
+  padding: 15px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  border-left: 3px solid #4285f4;
+}
+
+.paper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.paper-title-container {
+  flex: 1;
+}
+
+.source-logo-container {
+  margin-left: 15px;
+  flex-shrink: 0;
+}
+
+.source-logo {
+  width: 110px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.source-logo:hover {
+  transform: scale(1.1);
+}
+
+.paper-title {
+  color: #1a73e8;
+  font-weight: 400;
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.paper-item .paper-authors {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.paper-source {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 12px;
+}
+
+.paper-summary {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 16px;
+}
+
+.paper-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Paper action buttons */
+.paper-actions .btn-outline-primary {
+  color: #4285f4;
+  border-color: rgba(66, 133, 244, 0.4);
+  background-color: rgba(66, 133, 244, 0.1);
+}
+
+.paper-actions .btn-outline-primary:hover {
+  background-color: rgba(66, 133, 244, 0.2);
+  color: #fff;
+}
+
+.paper-actions .btn-outline-secondary {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.paper-actions .btn-outline-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.filter-controls {
+  margin-left: 0;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.filter-controls .year-filter,
+.filter-controls .source-filter {
+  position: relative;
+}
+
+.filter-controls .dropdown-menu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  min-width: 160px; /* Tetapkan lebar minimum */
+  z-index: 1050; /* Pastikan dropdown muncul di atas elemen lain */
+  background-color: #1a1e3a; /* Pertahankan warna yang sesuai dengan tema */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.filter-controls .btn-outline-light {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.filter-controls .btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.filter-controls .dropdown-menu {
+  background-color: #1a1e3a; /* Warna gelap yang cocok dengan tema */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 0.5rem;
+}
+
+.filter-controls .dropdown-item {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+}
+
+.filter-controls .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.filter-controls .filter-value {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85em;
+}
+
+.year-filter .btn,
+.source-filter .btn {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.suggested-queries {
+  margin-top: 15px;
+}
+/* Suggested queries styling */
+.suggested-queries-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.suggested-query-tag {
+  background-color: rgba(66, 133, 244, 0.15);
+  color: #1a73e8;
+  border: 1px solid rgba(66, 133, 244, 0.3);
+  font-weight: 500;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-block;
+  transition: background-color 0.2s;
+}
+
+.suggested-query-tag:hover {
+  background-color: rgba(66, 133, 244, 0.3);
+  color: #ffff;
+}
+
+/* Source icons */
+.source-icon {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Pagination styling */
+.pagination-container {
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Pastikan pagination tetap muncul */
+.pagination-container:not(.d-none) {
+  display: flex !important;
+}
+
+/* Style untuk pagination sesuai tema gelap */
+.pagination .page-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  margin: 0 3px;
+  border-radius: 6px;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #4285f4;
+  border-color: #4285f4;
+  color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.pagination .page-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* Loading state styling */
+.loading-state {
+  text-align: center;
+  padding: 50px 20px;
+  margin: auto;
+}
+
+.results-area {
+  padding: 20px;
+}
+
+/* Make sure paper list has proper spacing */
+.papers-list {
+  position: relative;
+  min-height: 100px; /* Berikan ruang minimum untuk kosong juga */
+}
+
+/* Styling untuk auth links */
+.auth-links {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.auth-links .nav-link {
+  color: white;
+  font-weight: 500;
+  transition: color 0.2s, background-color 0.2s;
+  padding: 6px 15px;
+  border-radius: 20px;
+}
+
+.auth-links .nav-link:hover {
+  text-decoration: none;
+}
+
+.auth-links .login-link {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.auth-links .login-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.auth-links .register-link {
+  background-color: rgba(66, 133, 244, 0.1);
+  border: 1px solid rgba(66, 133, 244, 0.3);
+  color: #4285f4;
+}
+
+.auth-links .register-link:hover {
+  background-color: rgba(66, 133, 244, 0.2);
+}
+/* === Modal Ringkasan Styling dengan Efek Transparan dan Buram === */
+.modal-content {
+  background-color: rgba(12, 14, 35, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Header modal dengan warna konsisten */
+.modal-header {
+  background-color: rgba(12, 14, 35, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding: 15px 20px;
+}
+
+.modal-body {
+  background-color: rgba(12, 14, 35, 0.5);
+  padding: 16px;
+}
+
+/* Footer modal dengan warna konsisten */
+.modal-footer {
+  background-color: rgba(12, 14, 35, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  padding: 15px 20px;
+}
+
+.modal-title {
+  color: #4285f4;
+  font-weight: 600;
+}
+
+/* Style untuk konten modal ringkasan */
+#summaryModalContent {
+  animation: fadeIn 0.3s ease;
+  padding: 10px 5px;
+}
+
+#summaryModal .modal-body {
+  max-height: calc(90vh - 150px); /* 150px untuk header + footer */
+  overflow-y: auto;
+  padding: 20px;
+}
+
+
+#summaryModalContent .summary-content {
+  background-color: rgba(12, 14, 35, 0.4); /* Background lebih transparan */
+  padding: 15px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  border-left: 3px solid #4285f4;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  margin-top: 5px;
+  line-height: 1.6;
+}
+
+/* Untuk paragraf di dalam konten ringkasan */
+#summaryModalContent .summary-content p {
+  margin-bottom: 15px;
+}
+
+/* Untuk section header di dalam konten ringkasan */
+#summaryModalContent .summary-section {
+  color: #4285f4;
+  font-weight: 600;
+  border-left: 3px solid #4285f4;
+  padding-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* Spinner loading di modal */
+#summaryModalContent .spinner-border {
+  color: #4285f4;
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Styling untuk tombol dalam modal */
+.modal-footer .btn-primary.copy-summary-btn {
+  background-color: rgba(66, 133, 244, 0.15);
+  border-color: rgba(66, 133, 244, 0.3);
+  color: #4285f4;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: all 0.2s ease;
+}
+
+.modal-footer .btn-primary.copy-summary-btn:hover {
+  background-color: rgba(66, 133, 244, 0.25);
+  color: white;
+  box-shadow: 0 0 12px rgba(66, 133, 244, 0.4);
+}
+
+.modal-footer .btn-secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* Animasi fade-in untuk konten modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Icon styling dalam header modal */
+.summary-icon {
+  color: #4285f4;
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+/* Style untuk close button modal */
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
+}
+
+/* Memberikan efek glass pada modal */
+.modal-dialog {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Style untuk alert di dalam modal */
+#summaryModalContent .alert-danger {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #ff8d9e;
+  border-color: rgba(220, 53, 69, 0.3);
+  border-radius: 8px;
+}
+
+/* === Modal Chat Styling === */
+#chatContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 10px 5px;
+}
+
+/* Message bubbles */
+.message-bubble {
+  padding: 12px 15px;
+  border-radius: 12px;
+  max-width: 85%;
+  word-wrap: break-word;
+}
+
+.user-message {
+  align-self: flex-end;
+  background-color: rgba(66, 133, 244, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(66, 133, 244, 0.3);
+  margin-left: auto;
+}
+
+.ai-message {
+  align-self: flex-start;
+  background-color: rgba(12, 14, 35, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-right: auto;
+}
+
+/* Chat header */
+.chat-icon {
+  color: #4285f4;
+  font-size: 1.2rem;
+}
+
+/* Chat input styling */
+.modal-question-input {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  caret-color: white !important;
+}
+
+.modal-question-input:focus {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.25);
+}
+
+.modal-footer .input-group {
+  width: 100%;
+}
+
+.send-question-btn {
+  background-color: #4285f4;
+  border-color: #4285f4;
+}
+
+.send-question-btn:hover {
+  background-color: #5a95f5;
+  border-color: #5a95f5;
+}
+
+/* Paper context in chat */
+.paper-context {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border-left: 2px solid #4285f4;
+}
+
+.paper-context-title {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Typing indicator */
+.typing-indicator {
+  display: flex;
+  padding: 10px 12px;
+  background-color: rgba(12, 14, 35, 0.4);
+  border-radius: 12px;
+  max-width: 100px;
+  margin-right: auto;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation: bounce 1s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation: bounce 1s infinite 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation: bounce 1s infinite 0.4s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Styling untuk indikator sumber PDF */
+.pdf-source-indicator {
+  background-color: rgba(66, 133, 244, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  border-left: 3px solid #4285f4;
+}
+
+.pdf-source-indicator .fas {
+  font-size: 1.1rem;
+  color: #4285f4;
+}
+
+.reset-filter-btn {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(255, 102, 102, 0.15);
+  border-color: rgba(255, 102, 102, 0.3);
+}
+
+.reset-filter-btn:hover {
+  background-color: rgba(255, 102, 102, 0.3);
+  border-color: rgba(255, 102, 102, 0.5);
+  color: white;
+}
+
+/* Tampilan filter aktif */
+.year-filter .btn[data-current-filter]:not([data-current-filter="all"]),
+.source-filter .btn:not([data-current-filter="all"]):not(:contains("Source")) {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Styling untuk indikator PDF dan tombol upload */
+.pdf-source-indicator {
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.pdf-source-indicator i {
+  margin-right: 8px;
+}
+
+.pdf-source-indicator .text-success {
+  color: #5cb85c !important;
+}
+
+.pdf-source-indicator .text-warning {
+  color: #f0ad4e !important;
+}
+
+.pdf-source-indicator .text-info {
+  color: #5bc0de !important;
+}
+
+.pdf-options {
+  margin-top: 10px;
+}
+
+.activity-history {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.activity-history h4 {
+  margin-bottom: 15px;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
+}
+
+.activity-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.activity-icon {
+  margin-right: 12px;
+  width: 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #fff;
+}
+
+.activity-meta {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 3px;
+}
+
+/* Style untuk Collections */
+.collections-container {
+  margin-top: 20px;
+}
+
+.collection-item {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.collection-item:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.collection-title {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #fff;
+}
+
+.collection-actions {
+  display: flex;
+}
+
+.collection-actions button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
+}
+
+.collection-actions button:hover {
+  color: #fff;
+}
+
+.collection-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+
+.collection-meta {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.collection-papers {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.collection-paper {
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.collection-paper:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.collection-paper-title {
+  font-size: 0.9rem;
+  margin: 0 0 3px 0;
+  color: #fff;
+}
+
+.collection-paper-meta {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Citation dialog styles */
+.citation-container {
+  margin-top: 15px;
+}
+
+.citation-styles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.citation-style-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  min-width: 80px;
+}
+.citation-style-options .btn {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.citation-style-btn.active {
+  background-color: #10b981 !important;
+  color: white !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+}
+
+.citation-icon {
+  color: #10b981;
+  font-size: 1.2rem;
+}
+
+.citation-style-btn:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.citation-result {
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 15px;
+  border-radius: 8px;
+  position: relative;
+  margin-top: 15px;
+}
+
+.citation-text {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #e2e2e2;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.5s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.collection-dropdown {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.btn-add-collection {
+  margin-top: 10px;
+}
+
+.empty-collections-msg {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.paper-actions .btn-outline-success {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.4);
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.paper-actions .btn-outline-success:hover {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #fff;
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+/* Tombol Simpan (Collection) - menggunakan warna kuning/amber yang lebih cocok dengan tema gelap */
+.paper-actions .btn-outline-warning,
+.collection-btn {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.4);
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.paper-actions .btn-outline-warning:hover,
+.collection-btn:hover {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fff;
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+/* Override untuk aktif state pada tombol-tombol citation */
+.citation-style-btn.active {
+  background-color: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+/* Modal Koleksi - penyesuaian warna */
+.collection-icon {
+  color: #f59e0b; /* Amber untuk konsistensi dengan tombol simpan */
+}
+
+.modal-content .save-to-collection-btn {
+  background-color: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+}
+
+.modal-content .save-to-collection-btn:hover {
+  background-color: rgba(245, 158, 11, 0.3);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: white;
+}
+
+body.guest-user .citation-btn,
+body.guest-user .save-btn,
+body.guest-user .collection-btn {
+    display: none !important;
+}
+
+/* Sembunyikan indikator session-only untuk user yang login */
+body.logged-in-user .guest-only-indicator {
+    display: none !important;
+}
+
+/* Indikator guest user pada fitur chat */
+.guest-only-indicator {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffe69c;
+    border-left: 3px solid #ffc107;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+/* Style untuk menunjukkan fitur terbatas */
+.limited-feature::after {
+    content: "Login Required";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: rgba(33, 37, 41, 0.8);
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 10px;
+    border-radius: 0 4px 0 4px;
+}
+
+.feature-list {
+  list-style: none;
+  padding-left: 5px;
+}
+
+.feature-list li {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.feature-list li i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+.guest-reminder {
+  margin: 15px 0;
+}
+
+.guest-reminder .alert {
+  background-color: rgba(13, 202, 240, 0.15);
+  border-color: rgba(13, 202, 240, 0.3);
+  color: #8de0f0;
+}
+
+.custom-pdf-btn {
+  border-color: #5a67d8;
+  color: #5a67d8;
+}
+.custom-pdf-btn:hover {
+  background-color: #5a67d8;
+  color: white;
+}
+
+/* CSS untuk riwayat chat di sidebar */
+/* Hapus definisi history-item yang lama di bagian bawah file */
+/* Ganti dengan style berikut yang menggabungkan kedua definisi */
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  opacity: 1;
+  overflow: hidden;
+  max-height: 200px;
+  margin-bottom: 8px;
+  background-color: rgba(12, 14, 35, 0.4);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.history-item:hover {
+  background-color: rgba(66, 133, 244, 0.15);
+  transform: translateY(-2px);
+}
+
+.history-item-content {
+  flex-grow: 1;
+  cursor: pointer;
+  padding-right: 8px;
+}
+
+.history-item-question {
+  font-weight: 600;
+  color: #4285f4;
+  margin-bottom: 3px;
+  font-size: 0.9rem;
+}
+
+.history-item-paper {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-bottom: 3px;
+}
+
+.history-item-date {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+.history-item-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.history-item:hover .history-item-actions {
+  opacity: 1;
+}
+
+.btn-delete-history {
+  background: none;
+  border: none;
+  color: #ff5b5b;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-delete-history:hover {
+  background-color: rgba(255, 91, 91, 0.15);
+}
+
+.history-item.deleting {
+  opacity: 0;
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: opacity 0.3s;
+}
+
+.reset-pdf-btn {
+  background-color: rgba(220, 53, 69, 0.15) !important;
+  border-color: rgba(220, 53, 69, 0.3) !important;
+  color: #dc3545 !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: all 0.3s ease !important;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.reset-pdf-btn:hover {
+  background-color: rgba(220, 53, 69, 0.25) !important;
+  border-color: rgba(220, 53, 69, 0.5) !important;
+  color: white !important;
+  box-shadow: 0 0 12px rgba(220, 53, 69, 0.3);
+  transform: translateY(-1px);
+}
+
+.reset-pdf-btn:active {
+  background-color: rgba(220, 53, 69, 0.3) !important;
+  transform: translateY(0);
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.4);
+}
+
+/* ✅ Styling khusus untuk tombol reset di chat modal */
+.chat-actions .reset-pdf-btn {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* ✅ Styling untuk tombol reset di PDF source indicator */
+.pdf-source-indicator .reset-pdf-btn {
+  margin-left: 0.75rem;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+/* ✅ Konsistensi dengan tombol PDF upload */
+.pdf-upload-btn {
+  background-color: rgba(66, 133, 244, 0.15) !important;
+  border-color: rgba(66, 133, 244, 0.3) !important;
+  color: #4285f4 !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: all 0.3s ease !important;
+}
+
+.pdf-upload-btn:hover {
+  background-color: rgba(66, 133, 244, 0.25) !important;
+  border-color: rgba(66, 133, 244, 0.5) !important;
+  color: white !important;
+  box-shadow: 0 0 12px rgba(66, 133, 244, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ✅ Styling untuk modal konfirmasi reset PDF */
+#resetPdfConfirmModal .modal-content {
+  background: linear-gradient(135deg, 
+    rgba(12, 14, 35, 0.95) 0%, 
+    rgba(20, 24, 52, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#resetPdfConfirmModal .modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#resetPdfConfirmModal .modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#resetPdfConfirmModal .btn-danger {
+  background-color: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.4);
+  color: #dc3545;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+#resetPdfConfirmModal .btn-danger:hover {
+  background-color: rgba(220, 53, 69, 0.3);
+  border-color: rgba(220, 53, 69, 0.6);
+  color: white;
+  box-shadow: 0 0 15px rgba(220, 53, 69, 0.4);
+}
+
+#resetPdfConfirmModal .btn-outline-light {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+#resetPdfConfirmModal .btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+/* ✅ Konsistensi alert dalam modal konfirmasi */
+#resetPdfConfirmModal .alert-warning {
+  background-color: rgba(255, 193, 7, 0.15);
+  border-color: rgba(255, 193, 7, 0.3);
+  color: #ffc107;
+}
+
+/* ✅ Paper preview dalam modal konfirmasi */
+#resetPdfConfirmModal .paper-preview {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
